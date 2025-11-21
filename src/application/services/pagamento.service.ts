@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+
 import { CreatePagamentoDto } from '../dto/pagamento.dto';
-import type { IPagamentoRepository } from '../../domain/repositories/pagamento.repository';
 import { Pagamento } from '../../domain/entities/pagamento.entity';
+import type { IPagamentoRepository } from '../../domain/repositories/pagamento.repository';
 
 @Injectable()
 export class PagamentoService {

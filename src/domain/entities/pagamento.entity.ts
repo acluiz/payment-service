@@ -8,8 +8,11 @@ export class Pagamento {
   ) {}
 
   public static create(dto: CreatePagamentoDto): Pagamento {
-    const dataPagamento = `${dto.dia}/${dto.mes}/${dto.ano}`;
+    const day = String(dto.dia).padStart(2, '0');
+    const month = String(dto.mes).padStart(2, '0');
 
-    return new Pagamento(dto.codAss, dataPagamento, dto.valorPago);
+    const paymentDate = `${dto.ano}-${month}-${day}`;
+
+    return new Pagamento(dto.codAss, paymentDate, dto.valorPago);
   }
 }
