@@ -7,6 +7,8 @@ import { PagamentosController } from '../controllers/pagamento.controller';
 import { PagamentoService } from '../application/services/pagamento.service';
 import { PagamentoRepository } from '../infra/repositories/pagamento.repository';
 
+import 'dotenv/config';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Pagamento]),
@@ -15,9 +17,7 @@ import { PagamentoRepository } from '../infra/repositories/pagamento.repository'
         name: 'PAYMENT_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: [
-            'amqps://lwjuwfdp:yioROq3lEPbgUCc1aoBkhQRUMY7A6RsB@jackal.rmq.cloudamqp.com/lwjuwfdp',
-          ],
+          urls: [`${process.env.RMQ_URL}`],
           queue: 'payment',
         },
       },
