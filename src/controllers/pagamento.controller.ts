@@ -1,14 +1,25 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Inject } from '@nestjs/common';
 
 import { CreatePagamentoDto } from '../application/dto/pagamento.dto';
 import { PagamentoService } from '../application/services/pagamento.service';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('pagamentos')
 export class PagamentosController {
-  constructor(private readonly pagamentosService: PagamentoService) {}
+  constructor(
+    private readonly pagamentosService: PagamentoService,
+    @Inject('PAYMENT_SERVICE') private readonly client: ClientProxy,
+  ) {}
 
   @Post()
-  criar(@Body() dto: CreatePagamentoDto) {
-    return this.pagamentosService.create(dto);
+  async criar(@Body() dto: CreatePagamentoDto) {
+    const payment = await this.pagamentosService.create(dto);
+
+    this.client.emit('payment_created', {
+      ...payment,
+      timestamp: new Date(),
+    });
+
+    return payment;
   }
 }
