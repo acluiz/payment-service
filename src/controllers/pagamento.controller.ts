@@ -15,7 +15,12 @@ export class PagamentosController {
   async criar(@Body() dto: CreatePagamentoDto) {
     const payment = await this.pagamentosService.create(dto);
 
-    this.client.emit('payment_created', {
+    this.client.emit('PagamentoPlanoServicoGestao', {
+      ...payment,
+      timestamp: new Date(),
+    });
+
+    this.client.emit('PagamentoPlanoServicoPlanosAtivos', {
       ...payment,
       timestamp: new Date(),
     });

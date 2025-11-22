@@ -5,7 +5,7 @@ import { Pagamento } from '../../domain/entities/pagamento.entity';
 import type { IPagamentoRepository } from '../../domain/repositories/pagamento.repository';
 
 @Injectable()
-@Dependencies('payment')
+@Dependencies('pagamentos')
 export class PagamentoService {
   constructor(
     @Inject('IPagamentoRepository')
