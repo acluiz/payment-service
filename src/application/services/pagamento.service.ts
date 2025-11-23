@@ -1,20 +1,34 @@
-import { Dependencies, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { lastValueFrom } from 'rxjs';
 
 import { CreatePagamentoDto } from '../dto/pagamento.dto';
 import { Pagamento } from '../../domain/entities/pagamento.entity';
+
 import type { IPagamentoRepository } from '../../domain/repositories/pagamento.repository';
 
+import 'dotenv/config';
+
 @Injectable()
-@Dependencies('pagamentos')
 export class PagamentoService {
   constructor(
+    private http: HttpService,
     @Inject('IPagamentoRepository')
     private readonly repository: IPagamentoRepository,
   ) {}
 
+  async sendEvent(payload: Pagamento) {
+    const baseUrl = process.env.API_GATEWAY_BASE_URL || '';
+
+    await lastValueFrom(this.http.post(`${baseUrl}/pagamento/evento`, payload));
+  }
+
   async create(dto: CreatePagamentoDto): Promise<Pagamento> {
     const pagamento = Pagamento.create(dto);
 
-    return this.repository.create(pagamento);
+    await this.repository.create(pagamento);
+    await this.sendEvent(pagamento);
+
+    return pagamento;
   }
 }

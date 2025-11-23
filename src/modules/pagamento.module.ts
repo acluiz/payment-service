@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { HttpModule } from '@nestjs/axios';
 
 import { Pagamento } from '../infra/entities/pagamento.entity';
 import { PagamentosController } from '../controllers/pagamento.controller';
@@ -10,19 +10,7 @@ import { PagamentoRepository } from '../infra/repositories/pagamento.repository'
 import 'dotenv/config';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Pagamento]),
-    ClientsModule.register([
-      {
-        name: 'PAYMENT_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [`${process.env.RMQ_URL}`],
-          queue: 'pagamentos',
-        },
-      },
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([Pagamento]), HttpModule],
   controllers: [PagamentosController],
   providers: [
     PagamentoService,
